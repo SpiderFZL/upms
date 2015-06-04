@@ -1,0 +1,38 @@
+.li{
+	line-height: 30px; 
+	float:left; 
+	margin-left: 15px; 
+	font-size:16px;
+}
+.li input{
+	display: none;
+}
+.span_z{
+	float:left; 
+	font-size:16px; 
+	padding:5px; 
+	color:#999;
+}
+.m_b15{
+	margin-bottom:15px
+}
+.f_right{
+    float:right;
+    display:none;
+}
+.list_s{
+    list-style:none;
+}
+.display_b{
+	display: block;
+}
+/*sign_in.jsp*/
+.m0_p0_di{
+    margin:0;
+    padding:0;
+    display:inline
+}
+/*user_index.jsp*/
+.float_r{
+    float:right;
+}
