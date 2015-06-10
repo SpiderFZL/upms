@@ -40,13 +40,20 @@ public class OpenIdAuthController extends BaseController {
 	 */
 	@RequestMapping(value = "/auth.do", method = RequestMethod.GET)
 	public void openIdAuth(HttpServletResponse response, HttpServletRequest request) throws IOException {
-		Endpoint endpoint = AuthConstant.manager.lookupEndpoint(AuthConfig.OPENID_SERVER);
-		Association association = AuthConstant.manager.lookupAssociation(endpoint);
-		request.getSession().setAttribute(AuthConstant.ATTR_MAC, association.getRawMacKey());
-		request.getSession().setAttribute(AuthConstant.ATTR_ALIAS, endpoint.getAlias());
-		System.out.println(request.getSession().getId());
-		String url = AuthConstant.manager.getAuthenticationUrl(endpoint, association);
-		response.sendRedirect(url);
+		try {
+			Endpoint endpoint = AuthConstant.manager.lookupEndpoint(AuthConfig.OPENID_SERVER);
+			Association association = AuthConstant.manager.lookupAssociation(endpoint);
+			request.getSession().setAttribute(AuthConstant.ATTR_MAC, association.getRawMacKey());
+			request.getSession().setAttribute(AuthConstant.ATTR_ALIAS, endpoint.getAlias());
+			System.out.println(request.getSession().getId());
+			String url = AuthConstant.manager.getAuthenticationUrl(endpoint, association);
+			response.sendRedirect(url);
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendRedirect("authFail.html");
+			return;
+		}
 	}
 
 	/**
@@ -69,8 +76,9 @@ public class OpenIdAuthController extends BaseController {
 		}
 		String userName = authentication.getUsername();
 		User user = userService.findUserByUserName(userName);
-		if (user == null) {
-			response.sendRedirect("/");
+		if (user == null || user.getId() == null) {
+			request.getSession().invalidate();
+			response.sendRedirect(AuthConfig.OPENID_SERVER_LOGOUT + AuthConfig.OPENID_LOCAL_LOGOUT);
 			return;
 		}
 		this.setSessionUser(request, user);// 将用户信息存储到session中
